@@ -1,8 +1,9 @@
+package p0814;
 public class AVLBasicExercise {
-    // ====== 內部節點結構 ======
+
     private static class Node {
         int key;
-        int height; // 以此節點為根的高度（葉子為 1）
+        int height;
         Node left, right;
         Node(int key) {
             this.key = key;
@@ -10,17 +11,12 @@ public class AVLBasicExercise {
         }
     }
 
-    // ====== 簡化版 AVL 樹 ======
     private Node root;
 
-    // --- 對外 API ---
-
-    // 插入節點（忽略重複鍵）
     public void insert(int key) {
         root = insert(root, key);
     }
 
-    // 搜尋節點（存在回傳 true）
     public boolean search(int key) {
         Node cur = root;
         while (cur != null) {
@@ -30,27 +26,23 @@ public class AVLBasicExercise {
         return false;
     }
 
-    // 計算樹的高度（空樹為 0），使用遞迴
     public int height() {
         return computeHeight(root);
     }
 
-    // 檢查是否為有效 AVL（同時滿足 BST 與平衡因子在 [-1, 1]）
     public boolean isValidAVL() {
         return validateAVL(root, Integer.MIN_VALUE, Integer.MAX_VALUE).ok;
     }
 
     private Node insert(Node node, int key) {
-        // 1) 標準 BST 插入
+        // BST 
         if (node == null) return new Node(key);
         if (key < node.key) node.left = insert(node.left, key);
         else if (key > node.key) node.right = insert(node.right, key);
-        else return node; // 忽略重複
+        else return node;
 
-        // 2) 更新高度
         updateHeight(node);
 
-        // 3) 平衡調整（根據平衡因子與插入方向選擇旋轉）
         int bf = balanceFactor(node);
 
         // LL
@@ -71,7 +63,7 @@ public class AVLBasicExercise {
             return rotateLeft(node);
         }
 
-        return node; // 無需旋轉
+        return node;
     }
 
     private int height(Node n) {
@@ -110,9 +102,6 @@ public class AVLBasicExercise {
         return y;
     }
 
-    // ====== 內部輔助：遞迴高度 & 驗證 ======
-
-    // 遞迴計算高度（空樹為 0）
     private int computeHeight(Node n) {
         if (n == null) return 0;
         int lh = computeHeight(n.left);
@@ -120,7 +109,6 @@ public class AVLBasicExercise {
         return 1 + Math.max(lh, rh);
     }
 
-    // 驗證：同時檢查 BST 範圍與 AVL 平衡，並用遞迴返回高度
     private static class CheckRes {
         boolean ok;
         int height;
@@ -133,7 +121,6 @@ public class AVLBasicExercise {
     private CheckRes validateAVL(Node n, int min, int max) {
         if (n == null) return new CheckRes(true, 0);
 
-        // BST 範圍約束（嚴格不允許重複）
         if (n.key <= min || n.key >= max) return new CheckRes(false, 0);
 
         CheckRes L = validateAVL(n.left, min, n.key);
@@ -142,7 +129,6 @@ public class AVLBasicExercise {
         CheckRes R = validateAVL(n.right, n.key, max);
         if (!R.ok) return new CheckRes(false, 0);
 
-        // 檢查平衡因子在 [-1, 1]
         int bf = L.height - R.height;
         if (bf < -1 || bf > 1) return new CheckRes(false, 0);
 
@@ -150,7 +136,6 @@ public class AVLBasicExercise {
         return new CheckRes(true, h);
     }
 
-    // ====== Demo 主程式 ======
     public static void main(String[] args) {
         AVLBasicExercise tree = new AVLBasicExercise();
 
