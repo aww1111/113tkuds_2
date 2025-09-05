@@ -1,8 +1,9 @@
-package LeetCode;
+package finalexam;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 public class LC03_NoRepeat_TaipeiMetroTap {
-    public int lengthOfLongestSubstring(String s) {
+    public static int lengthOfLongestSubstring(String s) {
         //Map
         Map<Character, Integer>lastIndexMap = new HashMap<>();
         int maxLen =0;
@@ -17,8 +18,14 @@ public class LC03_NoRepeat_TaipeiMetroTap {
         }
         //更新字元最後位置
         lastIndexMap.put(c, right);
+        maxLen = Math.max(maxLen, right - left + 1);
     }
-        //更新最大長度
         return maxLen;
+    }
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        String s = sc.nextLine().trim();
+        System.out.println(lengthOfLongestSubstring(s));
+        sc.close();
     }
 }
